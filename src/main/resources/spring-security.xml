@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 使security标签生效 -->
+	<beans:bean id="customWebInvocationPrivilegeEvaluator" class="org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator">
+		<beans:constructor-arg ref="userSecurityInterceptorFilter" />
+	</beans:bean>
+	
+	<http pattern="/css/**" security="none" />
+	<http pattern="/js/**" security="none" />
+	<http pattern="/fonts/*" security="none" />
+	<http pattern="/vimage*" security="none" />
+	<http pattern="/server-error/*" security="none" />
+	<http pattern="/favicon.ico" security="none" />
+	<http pattern="/image/*" security="none" />
+	
+	
+	<http auto-config="true" entry-point-ref="casAuthenticationEntryPoint">
+		<intercept-url pattern="/**" access="authenticated"/>
+		<custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
+		<custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
+		<!-- 使用SpringSecurity授权 -->
+		<custom-filter ref="userSecurityInterceptorFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+		<!-- 使用Cas认证 -->
+		<custom-filter position="CAS_FILTER" ref="casAuthenticaionFilter" />
+		
+		<csrf disabled="true"/>
+		<access-denied-handler ref="userAccessDeniedHandler" />
+	</http>
+	<beans:bean id="requestSingleLogoutFilter" class="com.kalian.security.plug.authority.KalianLogoutFilter">
+		<beans:constructor-arg value="${cas.server.logout.url}" />
+		<beans:constructor-arg>
+			<beans:bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+		</beans:constructor-arg>
+		<beans:property name="filterProcessesUrl" value="${springsecurity.logout.url}" />
+	</beans:bean>
+	
+	<beans:bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter" />
+
+	<!-- 若没有登陆，则跳转到Cas认证系统 -->
+	<beans:bean id="casAuthenticationEntryPoint" class="com.kalian.security.plug.authority.KalianCasAuthenticationEntryPoint">
+		<beans:property name="loginUrl" value="${cas.server.login.url}" />
+		<beans:property name="serviceProperties" ref="serviceProperties" />
+	</beans:bean>
+	<beans:bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+		<beans:property name="service" value="http://baidu.com" />
+		<beans:property name="sendRenew" value="false" />
+	</beans:bean>
+	
+	<!-- CAS过滤器 -->
+	<beans:bean id="casAuthenticaionFilter" class="com.kalian.security.plug.authority.KalianCasAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="kalianAuthenticationManager" />
+		
+	</beans:bean>
+	
+	<authentication-manager alias="kalianAuthenticationManager">
+		<authentication-provider ref="casAuthenticationProvider" />
+	</authentication-manager>
+	<beans:bean id="casAuthenticationProvider" class="com.kalian.security.plug.authority.KalianCasAuthenticationProvider">
+		<beans:property name="authenticationUserDetailsService" ref="casAuthenticationUserDetailsService" />
+		<beans:property name="serviceProperties" ref="serviceProperties" />    
+        <beans:property name="ticketValidator">    
+            <beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">    
+                <beans:constructor-arg index="0" value="${cas.server.login.url}" />
+                <beans:property name="encoding" value="UTF-8" />
+            </beans:bean>    
+        </beans:property>    
+        <beans:property name="key" value="an_id_for_this_auth_provider_only"/>
+	</beans:bean>
+	
+	<beans:bean id="casAuthenticationUserDetailsService" class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">    
+        <beans:property name="userDetailsService" ref="userDetailsServiceImpl" />    
+    </beans:bean>
+	
+ 	
+	<!-- 自定义权限验证 -->
+	<beans:bean id="userSecurityInterceptorFilter" class="com.kalian.security.plug.authority.UserSecurityInterceptorFilter">
+		<beans:property name="authenticationManager" ref="kalianAuthenticationManager" />
+		<beans:property name="accessDecisionManager" ref="accessDecisionManager" />
+		<beans:property name="securityMetadataSource" ref="userSecurityMetadataSource" />
+	</beans:bean>
+	<beans:bean id="accessDecisionManager" class="com.kalian.security.plug.authority.UserAccessDecisionManager" />
+	<beans:bean id="userSecurityMetadataSource" class="com.kalian.security.plug.authority.UserSecurityMetadataSource" />
+	<beans:bean id="userAccessDeniedHandler" class="com.kalian.security.plug.authority.UserAccessDeniedHandler">
+		<beans:property name="errorPage" value="/server-error/denied.jsp" />
+	</beans:bean>
+	 
+</beans:beans>

@@ -1,0 +1,181 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.kalian.top</groupId>
+		<artifactId>kalian-top</artifactId>
+		<version>1.0.1-RELEASE</version>
+  </parent>
+  <groupId>com.kalian.security.plug</groupId>
+  <artifactId>security-plug</artifactId>
+  <version>1.0.2-RELEASE</version>
+  <packaging>jar</packaging>
+
+
+	<name>security-plug</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<mvn.cas.server.logout.url>https://localsso.etaoko.com/logout</mvn.cas.server.logout.url>
+		<mvn.springsecurity.logout.url>/j_spring_cas_security_logout</mvn.springsecurity.logout.url>
+		<mvn.cas.server.login.url>https://localsso.etaoko.com</mvn.cas.server.login.url>
+		<mvn.security.plug.dubbo.regist.url>zookeeper://172.16.8.126:2181</mvn.security.plug.dubbo.regist.url>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.springsecurity.version>4.0.3.RELEASE</project.springsecurity.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- log4j支持 -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<!-- apache -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<!-- servlet编译支持 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- 内部公用包 -->
+		<dependency>
+			<groupId>kl_thirdchannel</groupId>
+			<artifactId>kalian.thirdchannel.commons</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.kalian.security.provide</groupId>
+			<artifactId>security-provide-service-share</artifactId>
+			<version>1.0.2-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.kalian.common</groupId>
+			<artifactId>common-util</artifactId>
+			<version>1.0.3-RELEASE</version>
+		</dependency>
+		<!-- dubbo依赖 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.5.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.sgroschupf</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<!-- dubbo依赖结束 -->
+
+		<!-- springsecurity -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${project.springsecurity.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${project.springsecurity.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${project.springsecurity.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-cas</artifactId>
+			<version>${project.springsecurity.version}</version>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>test</id>
+			<properties>
+				<mvn.cas.server.logout.url>https://kfsso.etaoko.com/logout</mvn.cas.server.logout.url>
+				<mvn.springsecurity.logout.url>/j_spring_cas_security_logout</mvn.springsecurity.logout.url>
+				<mvn.cas.server.login.url>https://kfsso.etaoko.com</mvn.cas.server.login.url>
+				<mvn.security.plug.dubbo.regist.url>zookeeper://111.1.1.235:2181</mvn.security.plug.dubbo.regist.url>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<finalName>security-plug</finalName>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			<!-- 指定编译环境java版本 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-source-plugin</artifactId>
+		      <executions>
+		          <execution>
+		              <id>attach-sources</id>
+		              <goals>
+		                  <goal>jar</goal>
+		              </goals>
+		         </execution>
+		     </executions>
+		 </plugin>
+		</plugins>
+	</build>
+</project>
