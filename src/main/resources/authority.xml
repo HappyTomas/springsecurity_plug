@@ -36,7 +36,7 @@
 		<csrf disabled="true"/>
 		<access-denied-handler ref="userAccessDeniedHandler" />
 	</http>
-	<beans:bean id="requestSingleLogoutFilter" class="com.kalian.security.plug.authority.KalianLogoutFilter">
+	<beans:bean id="requestSingleLogoutFilter" class="net.wangxj.authority.plugin.WangXJLogoutFilter">
 		<beans:constructor-arg value="${cas.server.logout.url}" />
 		<beans:constructor-arg>
 			<beans:bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
@@ -47,7 +47,7 @@
 	<beans:bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter" />
 
 	<!-- 若没有登陆，则跳转到Cas认证系统 -->
-	<beans:bean id="casAuthenticationEntryPoint" class="com.kalian.security.plug.authority.KalianCasAuthenticationEntryPoint">
+	<beans:bean id="casAuthenticationEntryPoint" class="net.wangxj.authority.plugin.WangXJCasAuthenticationEntryPoint">
 		<beans:property name="loginUrl" value="${cas.server.login.url}" />
 		<beans:property name="serviceProperties" ref="serviceProperties" />
 	</beans:bean>
@@ -57,15 +57,15 @@
 	</beans:bean>
 	
 	<!-- CAS过滤器 -->
-	<beans:bean id="casAuthenticaionFilter" class="com.kalian.security.plug.authority.KalianCasAuthenticationFilter">
-		<beans:property name="authenticationManager" ref="kalianAuthenticationManager" />
+	<beans:bean id="casAuthenticaionFilter" class="net.wangxj.authority.plugin.WangXJCasAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="wangxjAuthenticationManager" />
 		
 	</beans:bean>
 	
-	<authentication-manager alias="kalianAuthenticationManager">
+	<authentication-manager alias="wangxjAuthenticationManager">
 		<authentication-provider ref="casAuthenticationProvider" />
 	</authentication-manager>
-	<beans:bean id="casAuthenticationProvider" class="com.kalian.security.plug.authority.KalianCasAuthenticationProvider">
+	<beans:bean id="casAuthenticationProvider" class="net.wangxj.authority.plugin.WangXJCasAuthenticationProvider">
 		<beans:property name="authenticationUserDetailsService" ref="casAuthenticationUserDetailsService" />
 		<beans:property name="serviceProperties" ref="serviceProperties" />    
         <beans:property name="ticketValidator">    
@@ -81,16 +81,23 @@
         <beans:property name="userDetailsService" ref="userDetailsServiceImpl" />    
     </beans:bean>
 	
+	<beans:bean id="userDetailsServiceImpl" class="net.wangxj.authority.plugin.UserDetailsServiceImpl">
+		<beans:property name="platform_sign" value="${platform.sign}"/>
+		<beans:property name="authority_service_url" value="${authority.service.url}"/>
+	</beans:bean>
  	
 	<!-- 自定义权限验证 -->
-	<beans:bean id="userSecurityInterceptorFilter" class="com.kalian.security.plug.authority.UserSecurityInterceptorFilter">
-		<beans:property name="authenticationManager" ref="kalianAuthenticationManager" />
+	<beans:bean id="userSecurityInterceptorFilter" class="net.wangxj.authority.plugin.UserSecurityInterceptorFilter">
+		<beans:property name="authenticationManager" ref="wangxjAuthenticationManager" />
 		<beans:property name="accessDecisionManager" ref="accessDecisionManager" />
 		<beans:property name="securityMetadataSource" ref="userSecurityMetadataSource" />
 	</beans:bean>
-	<beans:bean id="accessDecisionManager" class="com.kalian.security.plug.authority.UserAccessDecisionManager" />
-	<beans:bean id="userSecurityMetadataSource" class="com.kalian.security.plug.authority.UserSecurityMetadataSource" />
-	<beans:bean id="userAccessDeniedHandler" class="com.kalian.security.plug.authority.UserAccessDeniedHandler">
+	<beans:bean id="accessDecisionManager" class="net.wangxj.authority.plugin.UserAccessDecisionManager" />
+	<beans:bean id="userSecurityMetadataSource" class="net.wangxj.authority.plugin.UserSecurityMetadataSource">
+		<beans:property name="platform_sign" value="${platform.sign}"/>
+		<beans:property name="authority_service_url" value="${authority.service.url}"/>
+	</beans:bean>
+	<beans:bean id="userAccessDeniedHandler" class="net.wangxj.authority.plugin.UserAccessDeniedHandler">
 		<beans:property name="errorPage" value="/server-error/denied.jsp" />
 	</beans:bean>
 	 

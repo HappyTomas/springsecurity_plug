@@ -12,8 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.kalian.security.plug.authority;
+package net.wangxj.authority.plugin;
 
 import java.io.IOException;
 
@@ -44,7 +43,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.Assert;
 
 
-public class KalianCasAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class WangXJCasAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 	
 		
 		/** 表示有状态的用户代理请求，例如web浏览器**/
@@ -74,7 +73,7 @@ public class KalianCasAuthenticationFilter extends AbstractAuthenticationProcess
 		// ~ Constructors
 		// ===================================================================================================
 
-		public KalianCasAuthenticationFilter() {
+		public WangXJCasAuthenticationFilter() {
 			super("/login/cas");
 			setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler());
 		}
@@ -139,7 +138,7 @@ public class KalianCasAuthenticationFilter extends AbstractAuthenticationProcess
 		//验证token时动态根据域名设置serviceUrl
 		String backUrl = request.getRequestURL().toString();
 		
-		final KalianUsernamePasswordAuthenticationToken authRequest = new KalianUsernamePasswordAuthenticationToken(
+		final WangXJUsernamePasswordAuthenticationToken authRequest = new WangXJUsernamePasswordAuthenticationToken(
 				username, password);
 		authRequest.setBackUrl(backUrl);
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));

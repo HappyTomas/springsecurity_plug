@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.kalian.security.plug.authority;
+package net.wangxj.authority.plugin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,10 +44,10 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.util.Assert;
 
 
-public class KalianCasAuthenticationProvider implements AuthenticationProvider,
+public class WangXJCasAuthenticationProvider implements AuthenticationProvider,
 		InitializingBean, MessageSourceAware {
 
-	private static final Log logger = LogFactory.getLog(KalianCasAuthenticationProvider.class);
+	private static final Log logger = LogFactory.getLog(WangXJCasAuthenticationProvider.class);
 
 	private AuthenticationUserDetailsService<CasAssertionAuthenticationToken> authenticationUserDetailsService;
 
@@ -165,9 +165,9 @@ public class KalianCasAuthenticationProvider implements AuthenticationProvider,
 	 */
 	private String getServiceUrl(Authentication authentication) {
 		
-		if(authentication instanceof KalianUsernamePasswordAuthenticationToken)
+		if(authentication instanceof WangXJUsernamePasswordAuthenticationToken)
 		{
-			KalianUsernamePasswordAuthenticationToken kalianAuth = (KalianUsernamePasswordAuthenticationToken) authentication;
+			WangXJUsernamePasswordAuthenticationToken kalianAuth = (WangXJUsernamePasswordAuthenticationToken) authentication;
 			String backUrl = kalianAuth.getBackUrl();
 			ServiceProperties service = new ServiceProperties();
 			service.setService(backUrl);

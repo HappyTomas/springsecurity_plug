@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.kalian.security.plug.authority;
+package net.wangxj.authority.plugin;
 
 import java.util.Collection;
 
@@ -33,9 +33,9 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
  *
  * @author Ben Alex
  */
-public class KalianUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken{
+public class WangXJUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken{
 
-	public KalianUsernamePasswordAuthenticationToken(Object principal, Object credentials) {
+	public WangXJUsernamePasswordAuthenticationToken(Object principal, Object credentials) {
 		super(principal, credentials);
 		// TODO Auto-generated constructor stub
 	}

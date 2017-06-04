@@ -1,4 +1,4 @@
-package com.kalian.security.plug.authority;
+package net.wangxj.authority.plugin;
 
 import java.io.IOException;
 
@@ -57,13 +57,7 @@ public class UserSecurityInterceptorFilter extends AbstractSecurityInterceptor i
 		
 		String checkCode = userSecurityMetadataSource.getCheckCode(requestUrl).toUpperCase();
 		
-		String currentMenuId = userSecurityMetadataSource.getMenuId(checkCode);
-		
-		log.debug("当前获取到的请求路径：" + checkCode + "," + currentMenuId + "," + requestUrl);
-		
-		if(currentMenuId!=null){
-			hrequest.getSession().setAttribute("currentMenuId", currentMenuId);
-		}
+		log.debug("当前获取到的请求路径：" + checkCode + "," + requestUrl);
 		
 		invoke(fi);
 	}

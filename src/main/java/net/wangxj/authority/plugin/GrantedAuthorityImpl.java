@@ -1,4 +1,4 @@
-package com.kalian.security.plug.authority;
+package net.wangxj.authority.plugin;
 
 import org.springframework.security.core.GrantedAuthority;
 

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.kalian.security.plug.authority;
+package net.wangxj.authority.plugin;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -52,7 +52,7 @@ import org.springframework.web.filter.GenericFilterBean;
  *
  * @author Ben Alex
  */
-public class KalianLogoutFilter extends GenericFilterBean {
+public class WangXJLogoutFilter extends GenericFilterBean {
 
 	// ~ Instance fields
 	// ================================================================================================
@@ -73,7 +73,7 @@ public class KalianLogoutFilter extends GenericFilterBean {
 	 * intended to perform the actual logout functionality (such as clearing the security
 	 * context, invalidating the session, etc.).
 	 */
-	public KalianLogoutFilter(LogoutSuccessHandler logoutSuccessHandler,
+	public WangXJLogoutFilter(LogoutSuccessHandler logoutSuccessHandler,
 			LogoutHandler... handlers) {
 		Assert.notEmpty(handlers, "LogoutHandlers are required");
 		this.handlers = Arrays.asList(handlers);
@@ -83,7 +83,7 @@ public class KalianLogoutFilter extends GenericFilterBean {
 		this.logoutSuccUrl = "";
 	}
 
-	public KalianLogoutFilter(String logoutSuccessUrl, LogoutHandler... handlers) {
+	public WangXJLogoutFilter(String logoutSuccessUrl, LogoutHandler... handlers) {
 		Assert.notEmpty(handlers, "LogoutHandlers are required");
 		this.handlers = Arrays.asList(handlers);
 		Assert.isTrue(

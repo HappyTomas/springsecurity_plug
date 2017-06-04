@@ -1,4 +1,4 @@
-package com.kalian.security.plug.authority;
+package net.wangxj.authority.plugin;
 
 import java.util.Collection;
 import java.util.Iterator;
