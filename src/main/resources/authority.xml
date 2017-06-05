@@ -22,7 +22,7 @@
 	<http pattern="/server-error/*" security="none" />
 	<http pattern="/favicon.ico" security="none" />
 	<http pattern="/image/*" security="none" />
-	
+	<http pattern="/img/*" security="none" />
 	
 	<http auto-config="true" entry-point-ref="casAuthenticationEntryPoint">
 		<intercept-url pattern="/**" access="authenticated"/>
@@ -35,6 +35,9 @@
 		
 		<csrf disabled="true"/>
 		<access-denied-handler ref="userAccessDeniedHandler" />
+		<headers>
+	        <frame-options policy="SAMEORIGIN"/>
+	    </headers>
 	</http>
 	<beans:bean id="requestSingleLogoutFilter" class="net.wangxj.authority.plugin.WangXJLogoutFilter">
 		<beans:constructor-arg value="${cas.server.logout.url}" />
@@ -98,7 +101,7 @@
 		<beans:property name="authority_service_url" value="${authority.service.url}"/>
 	</beans:bean>
 	<beans:bean id="userAccessDeniedHandler" class="net.wangxj.authority.plugin.UserAccessDeniedHandler">
-		<beans:property name="errorPage" value="/server-error/denied.jsp" />
+		<beans:property name="errorPage" value="${authority.permission.denied.page}" />
 	</beans:bean>
 	 
 </beans:beans>

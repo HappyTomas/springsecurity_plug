@@ -60,7 +60,8 @@ public class UserSecurityMetadataSource implements FilterInvocationSecurityMetad
 		
 		String checkCode;
 		for(Map resMap : resourceList){
-			checkCode = ((String)resMap.get("resource_url")).toUpperCase();
+			String resUrl = (String)resMap.get("resource_url");
+			checkCode = getCheckCode(resUrl);
 			resource_url_map.put(checkCode, (String)resMap.get("resource_uuid"));
 		}
 		
@@ -73,7 +74,7 @@ public class UserSecurityMetadataSource implements FilterInvocationSecurityMetad
 		Collection<ConfigAttribute> configAttributeLt = new ArrayList<>();
 		
 		String url = ((FilterInvocation)paramObject).getRequestUrl();
-		String checkCode = getCheckCode(url).toUpperCase();
+		String checkCode = getCheckCode(url);
 		
 		log.debug("用户请求的URL地址：" + url + ", 权限验证标识：" + checkCode);
 		
@@ -110,19 +111,21 @@ public class UserSecurityMetadataSource implements FilterInvocationSecurityMetad
 		return true;
 	}
 	
-	public String getCheckCode(String url) {
+	public String getCheckCode(final String url) {
 		String checkCode;
-		
-		url = url.replaceAll("[?]", "/");
-		
-		String[] ss = url.split("/");
-		
-		if(ss.length < 4){
-			checkCode = url;
-		}else{
-			checkCode = "/" + ss[1] + "/" + ss[2] + "/" + ss[3];			
+		String bakUrl = url;
+		//剔除查询串
+		if(bakUrl.indexOf("?") != -1){
+			bakUrl = bakUrl.substring(0, bakUrl.lastIndexOf("?"));
 		}
-		
+		if(bakUrl.indexOf("/") != 0){
+			bakUrl = "/" + bakUrl;
+		}
+		if(bakUrl.lastIndexOf("/") != (bakUrl.length() - 1)){
+			bakUrl = bakUrl + "/";
+		}
+		checkCode = bakUrl.toUpperCase();
+		log.debug(url + "的checkCode:-->" + checkCode);
 		return checkCode;
 	}
 
